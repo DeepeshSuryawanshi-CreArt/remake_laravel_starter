@@ -1,5 +1,8 @@
 <!-- dashboard page -->
 @extends('layouts.app')
+<!-- title  -->
+@push('title') Dashboard @endpush
+<!-- style -->
 @push('styles')
     <!-- plugins -->
     <link rel="stylesheet" href="{{ asset('global/vendor/chartist/chartist.css') }}">
@@ -8,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('assets/examples/css/dashboard/v1.css') }}">
 @endpush
 @section('body-class', 'animsition dashboard site-menubar-unfold')
+<!-- Content -->
 @section('content')
     <div class="page-content container-fluid">
         <div class="row" data-plugin="matchHeight" data-by-row="true">

@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta name="author" content="Deepesh suryawanshi">
 
-    <title>{{ config('app.name', 'Deepesh.ai') }} - @yield('title', 'Dashboard')</title>
+    <title>{{ config('app.name', 'Deepesh.ai') }} - @stack('title', 'Dashboard')</title>
 
     <link rel="apple-touch-icon" href="{{ asset('assets/images/apple-touch-icon.png') }}">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
