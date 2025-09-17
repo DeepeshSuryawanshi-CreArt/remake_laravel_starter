@@ -11,6 +11,14 @@
     <link rel="stylesheet" href="{{ asset('assets/examples/css/dashboard/v1.css') }}">
 @endpush
 @section('body-class', 'animsition dashboard site-menubar-unfold')
+
+@push('breadcrumb')
+    <li class="breadcrumb-item active">Dashboard</li>
+@endpush
+
+@push('page-title')
+    Dashboard
+@endpush
 <!-- Content -->
 @section('content')
     <div class="page-content container-fluid">

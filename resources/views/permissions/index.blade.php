@@ -20,6 +20,14 @@
 
 @section('body-class', 'animsition dashboard site-menubar-unfold')
 
+@push('breadcrumb')
+    <li class="breadcrumb-item active">Permissions</li>
+@endpush
+
+@push('page-title')
+    Permissions
+@endpush
+
 @section('content')
 <div class="page-content container-fluid">
     <div class="row">

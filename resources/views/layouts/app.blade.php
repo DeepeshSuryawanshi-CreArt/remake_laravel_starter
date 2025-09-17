@@ -36,10 +36,10 @@
     <link rel="stylesheet" href="{{ asset('global/vendor/slidepanel/slidePanel.css') }}">
     <link rel="stylesheet" href="{{ asset('global/vendor/flag-icon-css/flag-icon.css') }}">
     <link rel="stylesheet" href="{{ asset('global/vendor/waves/waves.css') }}">
-    
+
     <!-- Load additional plugins only when needed -->
     @stack('plugin-styles')
-    
+
 
 
     <!-- Fonts -->
@@ -49,7 +49,7 @@
 
     <!-- my css inject 💉 -->
     @stack('styles')
-    
+
     <!-- Loading styles -->
     <style>
         .page-loader {
@@ -65,10 +65,12 @@
             z-index: 9999;
             transition: opacity 0.3s ease;
         }
+
         .page-loader.hidden {
             opacity: 0;
             pointer-events: none;
         }
+
         .loader-spinner {
             width: 40px;
             height: 40px;
@@ -77,9 +79,15 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 
@@ -92,10 +100,27 @@
     <div class="page-loader" id="pageLoader">
         <div class="loader-spinner"></div>
     </div>
-    
+
     @include('layouts.navigation')
     <!-- Page Content -->
     <main class="page">
+        {{-- Breadcrumb Section --}}
+        <div class="page-header">
+            <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url('/dashboard') }}">Home</a></li>
+            @stack('breadcrumb')
+            </ol>
+            <h1 class="page-title">@stack('page-title', 'Dashboard')</h1>
+            <div class="page-header-actions d-flex align-items-center">
+            @stack('page-actions')
+            <button type="button"
+                class="btn btn-sm btn-icon btn-primary btn-round waves-effect waves-classic ml-2"
+                data-toggle="tooltip" data-original-title="Back"
+                onclick="window.history.back();">
+                <i class="icon md-arrow-left" aria-hidden="true"></i>
+            </button>
+            </div>
+        </div>
         @yield('content', "No Content Provided")
     </main>
     <!-- Footer -->
@@ -111,7 +136,7 @@
     <script src="{{ asset('global/vendor/jquery/jquery.js') }}"></script>
     <script src="{{ asset('global/vendor/popper-js/umd/popper.min.js') }}"></script>
     <script src="{{ asset('global/vendor/bootstrap/bootstrap.js') }}"></script>
-    
+
     <!-- Essential Scripts for Layout -->
     <script src="{{ asset('global/vendor/babel-external-helpers/babel-external-helpers.js') }}"></script>
     <script src="{{ asset('global/vendor/animsition/animsition.js') }}"></script>
@@ -120,7 +145,7 @@
     <script src="{{ asset('global/vendor/asscrollable/jquery-asScrollable.js') }}"></script>
     <script src="{{ asset('global/vendor/ashoverscroll/jquery-asHoverScroll.js') }}"></script>
     <script src="{{ asset('global/vendor/waves/waves.js') }}"></script>
-    
+
     <!-- Core Framework Scripts -->
     <script src="{{ asset('global/js/Component.js') }}"></script>
     <script src="{{ asset('global/js/Plugin.js') }}"></script>
@@ -130,7 +155,7 @@
     <!-- Essential Plugins -->
     <script src="{{ asset('global/vendor/switchery/switchery.js') }}"></script>
     <script src="{{ asset('global/vendor/slidepanel/jquery-slidePanel.js') }}"></script>
-    
+
     <!-- Menu and layout scripts -->
     <script src="{{ asset('assets/js/Section/Menubar.js') }}"></script>
     <script src="{{ asset('assets/js/Section/GridMenu.js') }}"></script>
@@ -166,7 +191,7 @@
 </body>
 <script>
     // Hide loading spinner when page is ready
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const loader = document.getElementById('pageLoader');
         if (loader) {
             setTimeout(() => {

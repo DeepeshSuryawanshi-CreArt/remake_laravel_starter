@@ -8,6 +8,15 @@
 
 @section('body-class', 'animsition dashboard site-menubar-unfold')
 
+@push('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('roles.index') }}">Roles</a></li>
+    <li class="breadcrumb-item active">Details</li>
+@endpush
+
+@push('page-title')
+    Role Details
+@endpush
+
 @section('content')
 <div class="page-content container-fluid">
     <div class="row">
