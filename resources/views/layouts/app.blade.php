@@ -107,18 +107,16 @@
         {{-- Breadcrumb Section --}}
         <div class="page-header">
             <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url('/dashboard') }}">Home</a></li>
-            @stack('breadcrumb')
+                <li class="breadcrumb-item"><a href="{{ url('/dashboard') }}">Home</a></li>
+                @stack('breadcrumb')
             </ol>
             <h1 class="page-title">@stack('page-title', 'Dashboard')</h1>
             <div class="page-header-actions d-flex align-items-center">
-            @stack('page-actions')
-            <button type="button"
-                class="btn btn-sm btn-icon btn-primary btn-round waves-effect waves-classic ml-2"
-                data-toggle="tooltip" data-original-title="Back"
-                onclick="window.history.back();">
-                <i class="icon md-arrow-left" aria-hidden="true"></i>
-            </button>
+                <button type="button" class="btn btn-sm btn-icon btn-primary btn-round waves-effect waves-classic ml-2"
+                    data-toggle="tooltip" data-original-title="Back" onclick="window.history.back();">
+                    <i class="icon md-arrow-left" aria-hidden="true"></i>
+                </button>
+                @stack('page-actions')
             </div>
         </div>
         @yield('content', "No Content Provided")
