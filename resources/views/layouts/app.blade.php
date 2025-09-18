@@ -183,6 +183,11 @@
         }
     </script>
 
+    // panel JS;
+    <!-- pages js -->
+    <script src="{{ asset('global/js/Plugin/panel.js') }}"></script>
+    <script src="{{ asset('assets/examples/js/uikit/panel-actions.js') }}"></script>
+
     <!-- My JS inject 💉 -->
     @stack('scripts')
 

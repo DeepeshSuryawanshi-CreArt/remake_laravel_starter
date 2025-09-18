@@ -16,7 +16,8 @@ class RoleController extends Controller
      */
     public function index(): View
     {
-        $roles = Role::select(['id', 'name', 'guard_name', 'created_at'])
+        $roles = Role::withCount('permissions')
+                    ->select(['id', 'name', 'guard_name', 'created_at'])
                     ->orderBy('name')
                     ->paginate(15);
         
@@ -28,7 +29,8 @@ class RoleController extends Controller
      */
     public function create(): View
     {
-        return view('roles.create');
+        $permissions = \Spatie\Permission\Models\Permission::orderBy('name')->get();
+        return view('roles.create', compact('permissions'));
     }
 
     /**
@@ -36,13 +38,18 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request): RedirectResponse
     {
-        Role::create([
+        $role = Role::create([
             'name' => $request->validated('name'),
             'guard_name' => $request->validated('guard_name', 'web'),
         ]);
 
+        // Assign permissions to role if provided
+        if ($request->has('permissions') && is_array($request->permissions)) {
+            $role->syncPermissions($request->permissions);
+        }
+
         return Redirect::route('roles.index')
-            ->with('status', 'Role created successfully.');
+            ->with('status', 'Role created successfully with permissions.');
     }
 
     /**
@@ -50,6 +57,7 @@ class RoleController extends Controller
      */
     public function show(Role $role): View
     {
+        $role->load('permissions');
         return view('roles.show', compact('role'));
     }
 
@@ -58,7 +66,8 @@ class RoleController extends Controller
      */
     public function edit(Role $role): View
     {
-        return view('roles.edit', compact('role'));
+        $permissions = \Spatie\Permission\Models\Permission::orderBy('name')->get();
+        return view('roles.edit', compact('role', 'permissions'));
     }
 
     /**
@@ -71,8 +80,16 @@ class RoleController extends Controller
             'guard_name' => $request->validated('guard_name', 'web'),
         ]);
 
+        // Sync permissions if provided
+        if ($request->has('permissions') && is_array($request->permissions)) {
+            $role->syncPermissions($request->permissions);
+        } else {
+            // If no permissions selected, remove all permissions
+            $role->syncPermissions([]);
+        }
+
         return Redirect::route('roles.index')
-            ->with('status', 'Role updated successfully.');
+            ->with('status', 'Role updated successfully with permissions.');
     }
 
     /**

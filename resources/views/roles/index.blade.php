@@ -47,7 +47,7 @@
     Roles
 @endpush
 @push('page-actions')
-    <a href="{{ route('roles.create') }}" data-toggle="tooltip" data-original-title="Add Permission"
+    <a href="{{ route('roles.create') }}" data-toggle="tooltip" data-original-title="Add Role"
         class="btn btn-sm btn-primary btn-round waves-effect waves-classic ml-2">
         <i class="icon md-plus" aria-hidden="true"></i>
     </a>
@@ -90,6 +90,7 @@
                                             <th>#</th>
                                             <th>Name</th>
                                             <th>Guard Name</th>
+                                            <th>Permissions</th>
                                             <th>Created At</th>
                                             <th>Actions</th>
                                         </tr>
@@ -103,6 +104,9 @@
                                                 </td>
                                                 <td>
                                                     <span class="badge badge-outline badge-primary">{{ $role->guard_name }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-pill badge-success">{{ $role->permissions_count }} permissions</span>
                                                 </td>
                                                 <td>{{ $role->created_at->format('M d, Y') }}</td>
                                                 <td>

@@ -33,6 +33,8 @@ class RoleRequest extends FormRequest
                 Rule::unique('roles', 'name')->ignore($role->id ?? null),
             ],
             'guard_name' => 'nullable|string|max:255|in:web,api',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,name',
         ];
     }
 
@@ -46,6 +48,8 @@ class RoleRequest extends FormRequest
             'name.unique' => 'This role name already exists.',
             'name.regex' => 'Role name must contain only letters, numbers, underscores, spaces, and hyphens.',
             'guard_name.in' => 'Guard name must be either web or api.',
+            'permissions.array' => 'Permissions must be an array.',
+            'permissions.*.exists' => 'One or more selected permissions do not exist.',
         ];
     }
 
@@ -57,6 +61,7 @@ class RoleRequest extends FormRequest
         return [
             'name' => 'role name',
             'guard_name' => 'guard name',
+            'permissions' => 'permissions',
         ];
     }
 }
