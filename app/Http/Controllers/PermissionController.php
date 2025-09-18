@@ -12,6 +12,17 @@ use Illuminate\Support\Facades\Redirect;
 
 class PermissionController extends Controller
 {
+    
+    // Middleware setup in the couse.
+    
+    public function __construct()
+    {
+        $this->middleware('permission:permission_view')->only(['index', 'show']);
+        $this->middleware('permission:permission_create')->only(['create', 'store']);
+        $this->middleware('permission:permission_edit')->only(['edit', 'update']);
+        $this->middleware('permission:permission_delete')->only(['destroy']);
+    }
+
     /**
      * Display a listing of the permissions.
      */

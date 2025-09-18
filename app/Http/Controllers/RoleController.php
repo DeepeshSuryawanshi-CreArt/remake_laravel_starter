@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Redirect;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:role_view')->only(['index', 'show']);
+        $this->middleware('permission:role_create')->only(['create', 'store']);
+        $this->middleware('permission:role_edit')->only(['edit', 'update']);
+        $this->middleware('permission:role_delete')->only(['destroy']);
+    }
     /**
      * Display a listing of the roles.
      */

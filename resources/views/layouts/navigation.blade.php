@@ -514,12 +514,20 @@
                                 </ul>
                             </li>
                             <li class="site-menu-item">
+                                <a class="animsition-link" href="{{ route('users.index') }}">
+                                    <i class="site-menu-icon md-account" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Users</span>
+                                </a>
+                            </li>
+                            <li class="site-menu-item">
                                 <a class="animsition-link" href="{{ route('permissions.index') }}">
+                                    <i class="site-menu-icon md-lock" aria-hidden="true"></i>
                                     <span class="site-menu-title">Permissions</span>
                                 </a>
                             </li>
                             <li class="site-menu-item">
                                 <a class="animsition-link" href="{{ route('roles.index') }}">
+                                    <i class="site-menu-icon md-assignment-account" aria-hidden="true"></i>
                                     <span class="site-menu-title">Roles</span>
                                 </a>
                             </li>
