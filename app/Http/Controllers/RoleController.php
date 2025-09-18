@@ -68,6 +68,7 @@ class RoleController extends Controller
         activity()
             ->causedBy(auth()->user())
             ->performedOn($role)
+            ->event('created')
             ->withProperties([
                 'attributes' => $role->toArray(),
                 'permissions' => $request->permissions ?? []
@@ -120,6 +121,7 @@ class RoleController extends Controller
         activity()
             ->causedBy(auth()->user())
             ->performedOn($role)
+            ->event('updated')
             ->withProperties([
                 'old' => $old,
                 'attributes' => $role->toArray(),
@@ -140,6 +142,7 @@ class RoleController extends Controller
         activity()
             ->causedBy(auth()->user())
             ->performedOn($role)
+            ->event('deleted')
             ->withProperties([
                 'attributes' => $role->toArray(),
                 'permissions' => $role->permissions->pluck('name')->toArray()

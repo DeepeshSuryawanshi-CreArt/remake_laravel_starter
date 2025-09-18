@@ -64,6 +64,7 @@ class PermissionController extends Controller
         activity()
             ->causedBy(auth()->user())
             ->performedOn($permission)
+            ->event('created')
             ->withProperties(['attributes' => $permission->toArray()])
             ->log('created permission');
 
@@ -101,6 +102,7 @@ class PermissionController extends Controller
         activity()
             ->causedBy(auth()->user())
             ->performedOn($permission)
+            ->event('updated')
             ->withProperties(['old' => $old, 'attributes' => $permission->toArray()])
             ->log('updated permission');
 
@@ -116,6 +118,7 @@ class PermissionController extends Controller
         activity()
             ->causedBy(auth()->user())
             ->performedOn($permission)
+            ->event('deleted')
             ->withProperties(['attributes' => $permission->toArray()])
             ->log('deleted permission');
             

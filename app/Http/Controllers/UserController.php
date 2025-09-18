@@ -57,6 +57,7 @@ class UserController extends Controller
         activity()
             ->causedBy(auth()->user())
             ->performedOn($user)
+            ->event('created')
             ->withProperties(['attributes' => $user->toArray()])
             ->log('created user');
         return Redirect::route('users.index')->with('status', 'User created successfully.');
@@ -89,6 +90,7 @@ class UserController extends Controller
         activity()
             ->causedBy(auth()->user())
             ->performedOn($user)
+            ->event('updated')
             ->withProperties(['old' => $old, 'attributes' => $user->toArray()])
             ->log('updated user');
         $msg = count($roles) ? 'User updated successfully.' : 'User updated and all roles revoked.';
@@ -101,6 +103,7 @@ class UserController extends Controller
         activity()
             ->causedBy(auth()->user())
             ->performedOn($user)
+            ->event('deleted')
             ->withProperties(['attributes' => $user->toArray()])
             ->log('deleted user');
         return Redirect::route('users.index')->with('status', 'User deleted successfully.');
