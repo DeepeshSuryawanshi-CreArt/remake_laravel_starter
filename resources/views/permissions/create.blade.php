@@ -78,7 +78,7 @@
                                     <a href="{{ route('permissions.index') }}" class="btn btn-default">
                                         <i class="icon md-close" aria-hidden="true"></i> Cancel
                                     </a>
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary ml-2">
                                         <i class="icon md-plus" aria-hidden="true"></i> Create Permission
                                     </button>
                                 </div>

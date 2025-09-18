@@ -89,7 +89,7 @@
                                         onsubmit="return confirm('Are you sure you want to delete this permission? This action cannot be undone.')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">
+                                        <button type="submit" class="btn btn-danger ml-2">
                                             <i class="icon md-delete" aria-hidden="true"></i> Delete Permission
                                         </button>
                                     </form>
