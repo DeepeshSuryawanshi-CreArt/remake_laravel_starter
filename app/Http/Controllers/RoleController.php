@@ -65,6 +65,15 @@ class RoleController extends Controller
             $role->syncPermissions($request->permissions);
         }
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($role)
+            ->withProperties([
+                'attributes' => $role->toArray(),
+                'permissions' => $request->permissions ?? []
+            ])
+            ->log('created role');
+
         return Redirect::route('roles.index')
             ->with('status', 'Role created successfully with permissions.');
     }
@@ -92,6 +101,9 @@ class RoleController extends Controller
      */
     public function update(RoleRequest $request, Role $role): RedirectResponse
     {
+        $old = $role->getOriginal();
+        $oldPermissions = $role->permissions->pluck('name')->toArray();
+        
         $role->update([
             'name' => $request->validated('name'),
             'guard_name' => $request->validated('guard_name', 'web'),
@@ -105,6 +117,17 @@ class RoleController extends Controller
             $role->syncPermissions([]);
         }
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($role)
+            ->withProperties([
+                'old' => $old,
+                'attributes' => $role->toArray(),
+                'old_permissions' => $oldPermissions,
+                'new_permissions' => $request->permissions ?? []
+            ])
+            ->log('updated role');
+
         return Redirect::route('roles.index')
             ->with('status', 'Role updated successfully with permissions.');
     }
@@ -114,6 +137,15 @@ class RoleController extends Controller
      */
     public function destroy(Role $role): RedirectResponse
     {
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($role)
+            ->withProperties([
+                'attributes' => $role->toArray(),
+                'permissions' => $role->permissions->pluck('name')->toArray()
+            ])
+            ->log('deleted role');
+            
         $role->delete();
 
         return Redirect::route('roles.index')

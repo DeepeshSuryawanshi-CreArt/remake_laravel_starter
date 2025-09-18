@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Spatie\Activitylog\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -53,6 +54,11 @@ class UserController extends Controller
         if ($request->has('roles')) {
             $user->syncRoles($request->roles);
         }
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->withProperties(['attributes' => $user->toArray()])
+            ->log('created user');
         return Redirect::route('users.index')->with('status', 'User created successfully.');
     }
 
@@ -75,18 +81,28 @@ class UserController extends Controller
         if (empty($data['password'])) {
             unset($data['password']);
         }
+        $old = $user->getOriginal();
         $user->update($data);
-        if ($request->has('roles')) {
-            $user->syncRoles($request->roles);
-        } else {
-            $user->syncRoles([]);
-        }
-        return Redirect::route('users.index')->with('status', 'User updated successfully.');
+        // Always sync roles, even if none selected (revoke all)
+        $roles = $request->input('roles', []);
+        $user->syncRoles($roles);
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->withProperties(['old' => $old, 'attributes' => $user->toArray()])
+            ->log('updated user');
+        $msg = count($roles) ? 'User updated successfully.' : 'User updated and all roles revoked.';
+        return Redirect::route('users.index')->with('status', $msg);
     }
 
     public function destroy(User $user): RedirectResponse
     {
         $user->delete();
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->withProperties(['attributes' => $user->toArray()])
+            ->log('deleted user');
         return Redirect::route('users.index')->with('status', 'User deleted successfully.');
     }
 }

@@ -3,10 +3,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ActivityController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+    // Activity log
+    Route::get('activity', [ActivityController::class, 'index'])->name('activity.index');
 });
 
 // Route for test page
@@ -36,6 +39,9 @@ Route::middleware('auth')->group(function () {
 
     // User routes
     Route::resource('users', UserController::class);
+
+    // Activity log
+    Route::get('activity', [ActivityController::class, 'index'])->name('activity.index');
 });
 
 require __DIR__ . '/auth.php';

@@ -531,6 +531,12 @@
                                     <span class="site-menu-title">Roles</span>
                                 </a>
                             </li>
+                            <li class="site-menu-item">
+                                <a class="animsition-link" href="{{ route('activity.index') }}">
+                                    <i class="site-menu-icon md-book" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Activity Log</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 

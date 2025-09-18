@@ -56,10 +56,16 @@ class PermissionController extends Controller
      */
     public function store(PermissionRequest $request): RedirectResponse
     {
-        Permission::create([
+        $permission = Permission::create([
             'name' => $request->validated('name'),
             'guard_name' => $request->validated('guard_name', 'web'),
         ]);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($permission)
+            ->withProperties(['attributes' => $permission->toArray()])
+            ->log('created permission');
 
         return Redirect::route('permissions.index')
             ->with('status', 'Permission created successfully.');
@@ -86,10 +92,17 @@ class PermissionController extends Controller
      */
     public function update(PermissionRequest $request, Permission $permission): RedirectResponse
     {
+        $old = $permission->getOriginal();
         $permission->update([
             'name' => $request->validated('name'),
             'guard_name' => $request->validated('guard_name', 'web'),
         ]);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($permission)
+            ->withProperties(['old' => $old, 'attributes' => $permission->toArray()])
+            ->log('updated permission');
 
         return Redirect::route('permissions.index')
             ->with('status', 'Permission updated successfully.');
@@ -100,6 +113,12 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission): RedirectResponse
     {
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($permission)
+            ->withProperties(['attributes' => $permission->toArray()])
+            ->log('deleted permission');
+            
         $permission->delete();
 
         return Redirect::route('permissions.index')
