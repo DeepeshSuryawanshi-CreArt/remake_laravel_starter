@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PermissionRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Redirect;
@@ -14,13 +15,21 @@ class PermissionController extends Controller
     /**
      * Display a listing of the permissions.
      */
-    public function index(): View
+    public function index(Request $request)
     {
-        $permissions = Permission::select(['id', 'name', 'guard_name', 'created_at'])
-                                ->orderBy('name')
-                                ->paginate(15);
-        
-        return view('permissions.index', compact('permissions'));
+        if ($request->ajax()) {
+            $query = Permission::select(['id', 'name', 'guard_name', 'created_at']);
+            return DataTables::of($query)
+                ->addColumn('actions', function ($permission) {
+                    return view('permissions.partials.actions', compact('permission'))->render();
+                })
+                ->rawColumns(['actions'])
+                ->editColumn('created_at', function ($permission) {
+                    return optional($permission->created_at)->format('M d, Y');
+                })
+                ->make(true);
+        }
+        return view('permissions.index');
     }
 
     /**

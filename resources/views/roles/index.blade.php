@@ -62,7 +62,6 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             Roles Management
-                            <span class="badge badge-pill badge-info">{{ $roles->total() }}</span>
                         </h3>
                         <div class="panel-actions">
                             <a class="panel-action icon md-minus" aria-expanded="true" data-toggle="panel-collapse"
@@ -81,86 +80,21 @@
                         </div>
                     @endif
 
-                    <div class="panel-body">
-                        @if($roles->count() > 0)
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th>Guard Name</th>
-                                            <th>Permissions</th>
-                                            <th>Created At</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($roles as $role)
-                                            <tr>
-                                                <td>{{ $loop->iteration + ($roles->currentPage() - 1) * $roles->perPage() }}</td>
-                                                <td>
-                                                    <strong>{{ $role->name }}</strong>
-                                                </td>
-                                                <td>
-                                                    <span class="badge badge-outline badge-primary">{{ $role->guard_name }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="badge badge-pill badge-success">{{ $role->permissions_count }} permissions</span>
-                                                </td>
-                                                <td>{{ $role->created_at->format('M d, Y') }}</td>
-                                                <td>
-                                                    <div class="btn-group" role="group">
-                                                        <a href="{{ route('roles.show', $role) }}"
-                                                            class="btn btn-sm btn-icon btn-pure btn-default" data-toggle="tooltip"
-                                                            title="View">
-                                                            <i class="icon md-eye" aria-hidden="true"></i>
-                                                        </a>
-                                                        <a href="{{ route('roles.edit', $role) }}"
-                                                            class="btn btn-sm btn-icon btn-pure btn-default" data-toggle="tooltip"
-                                                            title="Edit">
-                                                            <i class="icon md-edit" aria-hidden="true"></i>
-                                                        </a>
-                                                        <form action="{{ route('roles.destroy', $role) }}" method="POST"
-                                                            style="display: inline-block;"
-                                                            onsubmit="return confirm('Are you sure you want to delete this role?')">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-icon btn-pure btn-default"
-                                                                data-toggle="tooltip" title="Delete">
-                                                                <i class="icon md-delete" aria-hidden="true"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- Pagination -->
-                            <div class="d-flex justify-content-between align-items-center mt-20">
-                                <div class="pagination-info">
-                                    <span class="text-muted">
-                                        Showing {{ $roles->firstItem() ?? 0 }} to {{ $roles->lastItem() ?? 0 }} of
-                                        {{ $roles->total() }} results
-                                    </span>
-                                </div>
-                                <div class="pagination-wrapper">
-                                    {{ $roles->links('components.pagination') }}
-                                </div>
-                            </div>
-                        @else
-                            <div class="text-center py-50">
-                                <i class="icon md-account-circle font-size-40 grey-300"></i>
-                                <h4 class="grey-400 mt-20">No roles found</h4>
-                                <p class="grey-400">Start by creating your first role.</p>
-                                <a href="{{ route('roles.create') }}" class="btn btn-primary">
-                                    <i class="icon md-plus" aria-hidden="true"></i> Add Role
-                                </a>
-                            </div>
-                        @endif
+                    <div class="panel-body col-12">
+                        <div class="table-responsive">
+                            <table id="roles-table" class="table table-striped table-hover" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Guard Name</th>
+                                        <th>Permissions</th>
+                                        <th>Created At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <!-- End Panel -->
@@ -169,17 +103,34 @@
     </div>
 @endsection
 
+@push('plugin-scripts')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+@endpush
+
 @push('scripts')
-    <!-- Optimized scripts for roles -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
     <script>
-        $(document).ready(function () {
-            // Initialize tooltips only if Bootstrap tooltip is available
-            if (typeof $.fn.tooltip !== 'undefined') {
-                $('[data-toggle="tooltip"]').tooltip();
-            }
+        $(function () {
+            var table = $('#roles-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('roles.index') }}',
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'name', name: 'name' },
+                    { data: 'guard_name', name: 'guard_name' },
+                    { data: 'permissions_count', name: 'permissions_count', orderable: false, searchable: false },
+                    { data: 'created_at', name: 'created_at' },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false },
+                ],
+                order: [[1, 'asc']],
+                drawCallback: function() {
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
         });
     </script>
-    <!-- pages js -->
     <script src="{{ asset('global/js/Plugin/panel.js') }}"></script>
     <script src="{{ asset('assets/examples/js/uikit/panel-actions.js') }}"></script>
 @endpush

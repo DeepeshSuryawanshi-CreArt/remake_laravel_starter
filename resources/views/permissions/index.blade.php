@@ -61,7 +61,6 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             Permissions Management
-                            <span class="badge badge-pill badge-info">{{ $permissions->total() }}</span>
                         </h3>
                         <div class="panel-actions">
                             <a class="panel-action icon md-refresh-alt" data-toggle="panel-refresh"
@@ -82,84 +81,20 @@
                         </div>
                     @endif
 
-                    <div class="panel-body">
-                        @if($permissions->count() > 0)
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th>Guard Name</th>
-                                            <th>Created At</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($permissions as $permission)
-                                            <tr>
-                                                <td>{{ $loop->iteration + ($permissions->currentPage() - 1) * $permissions->perPage() }}
-                                                </td>
-                                                <td>
-                                                    <strong>{{ $permission->name }}</strong>
-                                                </td>
-                                                <td>
-                                                    <span
-                                                        class="badge badge-outline badge-primary">{{ $permission->guard_name }}</span>
-                                                </td>
-                                                <td>{{ $permission->created_at->format('M d, Y') }}</td>
-                                                <td>
-                                                    <div class="btn-group" role="group">
-                                                        <a href="{{ route('permissions.show', $permission) }}"
-                                                            class="btn btn-sm btn-icon btn-pure btn-default" data-toggle="tooltip"
-                                                            title="View">
-                                                            <i class="icon md-eye" aria-hidden="true"></i>
-                                                        </a>
-                                                        <a href="{{ route('permissions.edit', $permission) }}"
-                                                            class="btn btn-sm btn-icon btn-pure btn-default" data-toggle="tooltip"
-                                                            title="Edit">
-                                                            <i class="icon md-edit" aria-hidden="true"></i>
-                                                        </a>
-                                                        <form action="{{ route('permissions.destroy', $permission) }}" method="POST"
-                                                            style="display: inline-block;"
-                                                            onsubmit="return confirm('Are you sure you want to delete this permission?')">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-icon btn-pure btn-default"
-                                                                data-toggle="tooltip" title="Delete">
-                                                                <i class="icon md-delete" aria-hidden="true"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- Pagination -->
-                            <div class="d-flex justify-content-between align-items-center mt-20">
-                                <div class="pagination-info">
-                                    <span class="text-muted">
-                                        Showing {{ $permissions->firstItem() ?? 0 }} to {{ $permissions->lastItem() ?? 0 }} of
-                                        {{ $permissions->total() }} results
-                                    </span>
-                                </div>
-                                <div class="pagination-wrapper">
-                                    {{ $permissions->links('components.pagination') }}
-                                </div>
-                            </div>
-                        @else
-                            <div class="text-center py-50">
-                                <i class="icon md-lock font-size-40 grey-300"></i>
-                                <h4 class="grey-400 mt-20">No permissions found</h4>
-                                <p class="grey-400">Start by creating your first permission.</p>
-                                <a href="{{ route('permissions.create') }}" class="btn btn-primary">
-                                    <i class="icon md-plus" aria-hidden="true"></i> Add Permission
-                                </a>
-                            </div>
-                        @endif
+                    <div class="panel-body col-12">
+                        <div class="table-responsive">
+                            <table id="permissions-table" class="table table-striped table-hover" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 5%">ID</th>
+                                        <th style="width: 30%">Name</th>
+                                        <th style="width: 20%">Guard Name</th>
+                                        <th style="width: 25%">Created At</th>
+                                        <th style="width: 20%">Actions</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <!-- End Panel -->
@@ -168,17 +103,35 @@
     </div>
 @endsection
 
+@push('plugin-scripts')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+@endpush
+
 @push('scripts')
-    <!-- Optimized scripts for permissions -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
     <script>
-        $(document).ready(function () {
-            // Initialize tooltips only if Bootstrap tooltip is available
-            if (typeof $.fn.tooltip !== 'undefined') {
-                $('[data-toggle="tooltip"]').tooltip();
-            }
+        $(function () {
+            var table = $('#permissions-table').DataTable({
+                processing: true,
+                serverSide: true,
+                autoWidth: false,
+                scrollX: true,
+                ajax: '{{ route('permissions.index') }}',
+                columns: [
+                    { data: 'id', name: 'id', width: '5%' },
+                    { data: 'name', name: 'name', width: '30%' },
+                    { data: 'guard_name', name: 'guard_name', width: '20%' },
+                    { data: 'created_at', name: 'created_at', width: '25%' },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false, width: '20%' },
+                ],
+                order: [[1, 'asc']],
+                drawCallback: function() {
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
         });
     </script>
-    <!-- pages js -->
     <script src="{{ asset('global/js/Plugin/panel.js') }}"></script>
     <script src="{{ asset('assets/examples/js/uikit/panel-actions.js') }}"></script>
 @endpush

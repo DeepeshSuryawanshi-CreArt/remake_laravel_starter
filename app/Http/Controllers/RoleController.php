@@ -14,14 +14,24 @@ class RoleController extends Controller
     /**
      * Display a listing of the roles.
      */
-    public function index(): View
+    public function index(Request $request)
     {
-        $roles = Role::withCount('permissions')
-                    ->select(['id', 'name', 'guard_name', 'created_at'])
-                    ->orderBy('name')
-                    ->paginate(15);
-        
-        return view('roles.index', compact('roles'));
+        if ($request->ajax()) {
+            $query = Role::withCount('permissions')->select(['id', 'name', 'guard_name', 'created_at']);
+            return \Yajra\DataTables\Facades\DataTables::of($query)
+                ->addColumn('actions', function ($role) {
+                    return view('roles.partials.actions', compact('role'))->render();
+                })
+                ->editColumn('permissions_count', function ($role) {
+                    return $role->permissions_count . ' permissions';
+                })
+                ->editColumn('created_at', function ($permission) {
+                    return optional($permission->created_at)->format('M d, Y');
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
+        }
+        return view('roles.index');
     }
 
     /**
