@@ -54,12 +54,14 @@ class UserController extends Controller
         if ($request->has('roles')) {
             $user->syncRoles($request->roles);
         }
-        activity()
-            ->causedBy(auth()->user())
+        activity('users')
             ->performedOn($user)
+            ->causedBy($request->user())
             ->event('created')
-            ->withProperties(['attributes' => $user->toArray()])
-            ->log('created user');
+            ->withProperties([
+                'attributes' => $user->toArray(),
+            ])
+            ->log('User created');
         return Redirect::route('users.index')->with('status', 'User created successfully.');
     }
 
@@ -87,12 +89,15 @@ class UserController extends Controller
         // Always sync roles, even if none selected (revoke all)
         $roles = $request->input('roles', []);
         $user->syncRoles($roles);
-        activity()
-            ->causedBy(auth()->user())
+        activity('users')
             ->performedOn($user)
+            ->causedBy($request->user())
             ->event('updated')
-            ->withProperties(['old' => $old, 'attributes' => $user->toArray()])
-            ->log('updated user');
+            ->withProperties([
+                'old' => $old,
+                'attributes' => $user->toArray(),
+            ])
+            ->log('User updated');
         $msg = count($roles) ? 'User updated successfully.' : 'User updated and all roles revoked.';
         return Redirect::route('users.index')->with('status', $msg);
     }
@@ -100,12 +105,14 @@ class UserController extends Controller
     public function destroy(User $user): RedirectResponse
     {
         $user->delete();
-        activity()
-            ->causedBy(auth()->user())
+        activity('users')
             ->performedOn($user)
+            ->causedBy(auth()->user())
             ->event('deleted')
-            ->withProperties(['attributes' => $user->toArray()])
-            ->log('deleted user');
+            ->withProperties([
+                'attributes' => $user->toArray(),
+            ])
+            ->log('User deleted');
         return Redirect::route('users.index')->with('status', 'User deleted successfully.');
     }
 }

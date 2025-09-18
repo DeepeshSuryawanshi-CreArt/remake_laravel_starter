@@ -65,15 +65,15 @@ class RoleController extends Controller
             $role->syncPermissions($request->permissions);
         }
 
-        activity()
-            ->causedBy(auth()->user())
+        activity('roles')
             ->performedOn($role)
+            ->causedBy($request->user())
             ->event('created')
             ->withProperties([
                 'attributes' => $role->toArray(),
-                'permissions' => $request->permissions ?? []
+                'permissions' => $request->permissions ?? [],
             ])
-            ->log('created role');
+            ->log('Role created');
 
         return Redirect::route('roles.index')
             ->with('status', 'Role created successfully with permissions.');
@@ -118,17 +118,17 @@ class RoleController extends Controller
             $role->syncPermissions([]);
         }
 
-        activity()
-            ->causedBy(auth()->user())
+        activity('roles')
             ->performedOn($role)
+            ->causedBy($request->user())
             ->event('updated')
             ->withProperties([
                 'old' => $old,
                 'attributes' => $role->toArray(),
                 'old_permissions' => $oldPermissions,
-                'new_permissions' => $request->permissions ?? []
+                'new_permissions' => $request->permissions ?? [],
             ])
-            ->log('updated role');
+            ->log('Role updated');
 
         return Redirect::route('roles.index')
             ->with('status', 'Role updated successfully with permissions.');
@@ -139,15 +139,15 @@ class RoleController extends Controller
      */
     public function destroy(Role $role): RedirectResponse
     {
-        activity()
-            ->causedBy(auth()->user())
+        activity('roles')
             ->performedOn($role)
+            ->causedBy(auth()->user())
             ->event('deleted')
             ->withProperties([
                 'attributes' => $role->toArray(),
-                'permissions' => $role->permissions->pluck('name')->toArray()
+                'permissions' => $role->permissions->pluck('name')->toArray(),
             ])
-            ->log('deleted role');
+            ->log('Role deleted');
             
         $role->delete();
 

@@ -61,12 +61,14 @@ class PermissionController extends Controller
             'guard_name' => $request->validated('guard_name', 'web'),
         ]);
 
-        activity()
-            ->causedBy(auth()->user())
+        activity('permissions')
             ->performedOn($permission)
+            ->causedBy($request->user())
             ->event('created')
-            ->withProperties(['attributes' => $permission->toArray()])
-            ->log('created permission');
+            ->withProperties([
+                'attributes' => $permission->toArray(),
+            ])
+            ->log('Permission created');
 
         return Redirect::route('permissions.index')
             ->with('status', 'Permission created successfully.');
@@ -99,12 +101,15 @@ class PermissionController extends Controller
             'guard_name' => $request->validated('guard_name', 'web'),
         ]);
 
-        activity()
-            ->causedBy(auth()->user())
+        activity('permissions')
             ->performedOn($permission)
+            ->causedBy($request->user())
             ->event('updated')
-            ->withProperties(['old' => $old, 'attributes' => $permission->toArray()])
-            ->log('updated permission');
+            ->withProperties([
+                'old' => $old,
+                'attributes' => $permission->toArray(),
+            ])
+            ->log('Permission updated');
 
         return Redirect::route('permissions.index')
             ->with('status', 'Permission updated successfully.');
@@ -115,12 +120,14 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission): RedirectResponse
     {
-        activity()
-            ->causedBy(auth()->user())
+        activity('permissions')
             ->performedOn($permission)
+            ->causedBy(auth()->user())
             ->event('deleted')
-            ->withProperties(['attributes' => $permission->toArray()])
-            ->log('deleted permission');
+            ->withProperties([
+                'attributes' => $permission->toArray(),
+            ])
+            ->log('Permission deleted');
             
         $permission->delete();
 
