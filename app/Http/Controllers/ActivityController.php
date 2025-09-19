@@ -8,6 +8,10 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ActivityController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:activity_view');
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -77,7 +81,7 @@ class ActivityController extends Controller
                 ->orderColumn('date', 'created_at $1')
                 ->make(true);
         }
-    return view('system.activity.index');
+        return view('system.activity.index');
     }
 
     /**
@@ -89,6 +93,6 @@ class ActivityController extends Controller
         $properties = $activity->properties ? $activity->properties->toArray() : [];
         $old = $properties['old'] ?? [];
         $new = $properties['attributes'] ?? [];
-    return view('system.activity.show', compact('activity', 'old', 'new'));
+        return view('system.activity.show', compact('activity', 'old', 'new'));
     }
 }

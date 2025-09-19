@@ -25,7 +25,33 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = User::with('roles')->select(['id', 'name', 'email', 'created_at']);
+            $query = User::with('roles')->select(['id', 'name', 'email', 'created_at', 'email_verified_at']);
+
+            // Filter: Role
+            if ($request->filled('role')) {
+                $query->whereHas('roles', function ($q) use ($request) {
+                    $q->where('name', $request->role);
+                });
+            }
+
+            // Filter: Email status
+            if ($request->filled('email_status')) {
+                if ($request->email_status === 'verified') {
+                    $query->whereNotNull('email_verified_at');
+                } elseif ($request->email_status === 'unverified') {
+                    $query->whereNull('email_verified_at');
+                }
+            }
+
+            // Filter: Date from
+            if ($request->filled('from_date')) {
+                $query->whereDate('created_at', '>=', $request->from_date);
+            }
+            // Filter: Date to
+            if ($request->filled('to_date')) {
+                $query->whereDate('created_at', '<=', $request->to_date);
+            }
+
             return DataTables::of($query)
                 ->addColumn('roles', function ($user) {
                     return $user->roles->pluck('name')->join(', ');
