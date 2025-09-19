@@ -48,7 +48,7 @@ class PermissionController extends Controller
                     return str_replace('_', ' ', ucfirst($permission->name));
                 })
                 ->addColumn('actions', function ($permission) {
-                    return view('permissions.partials.actions', compact('permission'))->render();
+                    return view('system.permissions.partials.actions', compact('permission'))->render();
                 })
                 ->editColumn('roles_count', function ($permission) {
                     return '<span class="badge badge-success">' . (($permission->roles_count ?? 0)) . '</span>';
@@ -60,7 +60,7 @@ class PermissionController extends Controller
                 })
                 ->make(true);
         }
-        return view('permissions.index');
+    return view('system.permissions.index');
     }
 
     /**
@@ -68,7 +68,7 @@ class PermissionController extends Controller
      */
     public function create(): View
     {
-        return view('permissions.create');
+    return view('system.permissions.create');
     }
 
     /**
@@ -99,7 +99,7 @@ class PermissionController extends Controller
      */
     public function show(Permission $permission): View
     {
-        return view('permissions.show', compact('permission'));
+    return view('system.permissions.show', compact('permission'));
     }
 
     /**
@@ -107,7 +107,7 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission): View
     {
-        return view('permissions.edit', compact('permission'));
+    return view('system.permissions.edit', compact('permission'));
     }
 
     /**

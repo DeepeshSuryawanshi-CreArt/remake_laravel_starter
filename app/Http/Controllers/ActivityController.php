@@ -77,7 +77,7 @@ class ActivityController extends Controller
                 ->orderColumn('date', 'created_at $1')
                 ->make(true);
         }
-        return view('activity.index');
+    return view('system.activity.index');
     }
 
     /**
@@ -89,6 +89,6 @@ class ActivityController extends Controller
         $properties = $activity->properties ? $activity->properties->toArray() : [];
         $old = $properties['old'] ?? [];
         $new = $properties['attributes'] ?? [];
-        return view('activity.show', compact('activity', 'old', 'new'));
+    return view('system.activity.show', compact('activity', 'old', 'new'));
     }
 }

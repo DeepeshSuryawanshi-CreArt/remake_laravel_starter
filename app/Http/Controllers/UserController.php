@@ -31,7 +31,7 @@ class UserController extends Controller
                     return $user->roles->pluck('name')->join(', ');
                 })
                 ->addColumn('actions', function ($user) {
-                    return view('users.partials.actions', compact('user'))->render();
+                    return view('system.users.partials.actions', compact('user'))->render();
                 })
                 ->rawColumns(['actions'])
                 ->editColumn('created_at', function ($user) {
@@ -39,13 +39,13 @@ class UserController extends Controller
                 })
                 ->make(true);
         }
-        return view('users.index');
+    return view('system.users.index');
     }
 
     public function create(): View
     {
         $roles = Role::orderBy('name')->get();
-        return view('users.create', compact('roles'));
+    return view('system.users.create', compact('roles'));
     }
 
     public function store(UserRequest $request): RedirectResponse
@@ -68,14 +68,14 @@ class UserController extends Controller
     public function show(User $user): View
     {
         $user->load('roles');
-        return view('users.show', compact('user'));
+    return view('system.users.show', compact('user'));
     }
 
     public function edit(User $user): View
     {
         $roles = Role::orderBy('name')->get();
         $user->load('roles');
-        return view('users.edit', compact('user', 'roles'));
+    return view('system.users.edit', compact('user', 'roles'));
     }
 
     public function update(UserRequest $request, User $user): RedirectResponse

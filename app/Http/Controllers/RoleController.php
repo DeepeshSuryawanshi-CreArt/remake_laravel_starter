@@ -27,7 +27,7 @@ class RoleController extends Controller
             $query = Role::withCount('permissions')->select(['id', 'name', 'guard_name', 'created_at']);
             return \Yajra\DataTables\Facades\DataTables::of($query)
                 ->addColumn('actions', function ($role) {
-                    return view('roles.partials.actions', compact('role'))->render();
+                    return view('system.roles.partials.actions', compact('role'))->render();
                 })
                 ->addColumn('permissions', function ($role) {
                     $permissions = $role->permissions->take(3)->pluck('name')->toArray();
@@ -49,7 +49,7 @@ class RoleController extends Controller
                 ->rawColumns(['actions', 'user_count', 'permissions'])
                 ->make(true);
         }
-        return view('roles.index');
+    return view('system.roles.index');
     }
 
     /**
@@ -58,7 +58,7 @@ class RoleController extends Controller
     public function create(): View
     {
         $permissions = \Spatie\Permission\Models\Permission::orderBy('name')->get();
-        return view('roles.create', compact('permissions'));
+    return view('system.roles.create', compact('permissions'));
     }
 
     /**
@@ -96,7 +96,7 @@ class RoleController extends Controller
     public function show(Role $role): View
     {
         $role->load('permissions');
-        return view('roles.show', compact('role'));
+    return view('system.roles.show', compact('role'));
     }
 
     /**
@@ -105,7 +105,7 @@ class RoleController extends Controller
     public function edit(Role $role): View
     {
         $permissions = \Spatie\Permission\Models\Permission::orderBy('name')->get();
-        return view('roles.edit', compact('role', 'permissions'));
+    return view('system.roles.edit', compact('role', 'permissions'));
     }
 
     /**
