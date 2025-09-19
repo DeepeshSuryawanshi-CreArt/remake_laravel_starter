@@ -20,9 +20,11 @@
                 <div class="panel panel-primary panel-line">
                     <div class="panel-heading d-flex justify-content-between align-items-center">
                         <h3 class="panel-title">User: {{ $user->name }}</h3>
-                        <a href="{{ route('users.edit', $user) }}" class="btn btn-primary btn-sm ml-2">
-                            <i class="icon md-edit" aria-hidden="true"></i> Edit
-                        </a>
+                        @can('user_edit')
+                            <a href="{{ route('users.edit', $user) }}" class="btn btn-primary btn-sm ml-2">
+                                <i class="icon md-edit" aria-hidden="true"></i> Edit
+                            </a>
+                        @endcan
                     </div>
                     <div class="panel-body">
                         <dl class="row">

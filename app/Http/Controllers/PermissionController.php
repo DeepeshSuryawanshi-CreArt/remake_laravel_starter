@@ -48,7 +48,30 @@ class PermissionController extends Controller
                     return str_replace('_', ' ', ucfirst($permission->name));
                 })
                 ->addColumn('actions', function ($permission) {
-                    return view('system.permissions.partials.actions', compact('permission'))->render();
+                    $actions = '<div class="btn-group">';
+
+                    if (auth()->user()->can('permission_view')) {
+                        $actions .= '<a href="' . route('permissions.show', $permission) . '" class="btn btn-info btn-sm"><i class="icon md-eye"></i></a>';
+                    }
+
+                    if (auth()->user()->can('permission_edit')) {
+                        $actions .= '<a href="' . route('permissions.edit', $permission) . '" class="btn btn-warning btn-sm"><i class="icon md-edit"></i></a>';
+                    }
+
+                    if (auth()->user()->can('permission_delete')) {
+                        $actions .= '
+                            <form action="' . route('permissions.destroy', $permission) . '" method="POST" style="display:inline;" class="delete-role-form" data-role-name="' . $permission->name . '">
+                                ' . csrf_field() . '
+                                ' . method_field('DELETE') . '
+                                <button type="submit" class="btn btn-danger btn-sm" data-role-id="' . $permission->id . '" data-role-name="' . $permission->name . '" data-users-count="' . ($permission->users_count ?? 0) . '">
+                                    <i class="icon md-delete"></i>
+                                </button>
+                            </form>
+                        ';
+                    }
+
+                    $actions .= '</div>';
+                    return $actions;
                 })
                 ->editColumn('roles_count', function ($permission) {
                     return '<span class="badge badge-success">' . (($permission->roles_count ?? 0)) . '</span>';
@@ -60,7 +83,7 @@ class PermissionController extends Controller
                 })
                 ->make(true);
         }
-    return view('system.permissions.index');
+        return view('system.permissions.index');
     }
 
     /**
@@ -68,7 +91,7 @@ class PermissionController extends Controller
      */
     public function create(): View
     {
-    return view('system.permissions.create');
+        return view('system.permissions.create');
     }
 
     /**
@@ -99,7 +122,7 @@ class PermissionController extends Controller
      */
     public function show(Permission $permission): View
     {
-    return view('system.permissions.show', compact('permission'));
+        return view('system.permissions.show', compact('permission'));
     }
 
     /**
@@ -107,7 +130,7 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission): View
     {
-    return view('system.permissions.edit', compact('permission'));
+        return view('system.permissions.edit', compact('permission'));
     }
 
     /**

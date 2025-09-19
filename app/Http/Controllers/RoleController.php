@@ -27,7 +27,30 @@ class RoleController extends Controller
             $query = Role::withCount('permissions')->select(['id', 'name', 'guard_name', 'created_at']);
             return \Yajra\DataTables\Facades\DataTables::of($query)
                 ->addColumn('actions', function ($role) {
-                    return view('system.roles.partials.actions', compact('role'))->render();
+                    $actions = '<div class="btn-group">';
+
+                    if (auth()->user()->can('role_view')) {
+                        $actions .= '<a href="' . route('roles.show', $role) . '" class="btn btn-info btn-sm"><i class="icon md-eye"></i></a>';
+                    }
+
+                    if (auth()->user()->can('role_edit')) {
+                        $actions .= '<a href="' . route('roles.edit', $role) . '" class="btn btn-warning btn-sm"><i class="icon md-edit"></i></a>';
+                    }
+
+                    if (auth()->user()->can('role_delete')) {
+                        $actions .= '
+                            <form action="' . route('roles.destroy', $role) . '" method="POST" style="display:inline;" class="delete-role-form" data-role-name="' . $role->name . '">
+                                ' . csrf_field() . '
+                                ' . method_field('DELETE') . '
+                                <button type="submit" class="btn btn-danger btn-sm" data-role-id="' . $role->id . '" data-role-name="' . $role->name . '" data-users-count="' . ($role->users_count ?? 0) . '">
+                                    <i class="icon md-delete"></i>
+                                </button>
+                            </form>
+                        ';
+                    }
+
+                    $actions .= '</div>';
+                    return $actions;
                 })
                 ->addColumn('permissions', function ($role) {
                     $permissions = $role->permissions->take(3)->pluck('name')->toArray();
@@ -49,7 +72,7 @@ class RoleController extends Controller
                 ->rawColumns(['actions', 'user_count', 'permissions'])
                 ->make(true);
         }
-    return view('system.roles.index');
+        return view('system.roles.index');
     }
 
     /**
@@ -58,7 +81,7 @@ class RoleController extends Controller
     public function create(): View
     {
         $permissions = \Spatie\Permission\Models\Permission::orderBy('name')->get();
-    return view('system.roles.create', compact('permissions'));
+        return view('system.roles.create', compact('permissions'));
     }
 
     /**
@@ -96,7 +119,7 @@ class RoleController extends Controller
     public function show(Role $role): View
     {
         $role->load('permissions');
-    return view('system.roles.show', compact('role'));
+        return view('system.roles.show', compact('role'));
     }
 
     /**
@@ -105,7 +128,7 @@ class RoleController extends Controller
     public function edit(Role $role): View
     {
         $permissions = \Spatie\Permission\Models\Permission::orderBy('name')->get();
-    return view('system.roles.edit', compact('role', 'permissions'));
+        return view('system.roles.edit', compact('role', 'permissions'));
     }
 
     /**

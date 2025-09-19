@@ -31,7 +31,30 @@ class UserController extends Controller
                     return $user->roles->pluck('name')->join(', ');
                 })
                 ->addColumn('actions', function ($user) {
-                    return view('system.users.partials.actions', compact('user'))->render();
+                    $actions = '<div class="btn-group">';
+
+                    if (auth()->user()->can('user_view')) {
+                        $actions .= '<a href="' . route('users.show', $user) . '" class="btn btn-info btn-sm"><i class="icon md-eye"></i></a>';
+                    }
+
+                    if (auth()->user()->can('user_edit')) {
+                        $actions .= '<a href="' . route('users.edit', $user) . '" class="btn btn-warning btn-sm"><i class="icon md-edit"></i></a>';
+                    }
+
+                    if (auth()->user()->can('user_delete')) {
+                        $actions .= '
+                            <form action="' . route('users.destroy', $user) . '" method="POST" style="display:inline;" class="delete-user-form" data-user-name="' . $user->name . '">
+                                ' . csrf_field() . '
+                                ' . method_field('DELETE') . '
+                                <button type="submit" class="btn btn-danger btn-sm" data-user-id="' . $user->id . '" data-user-name="' . $user->name . '">
+                                    <i class="icon md-delete"></i>
+                                </button>
+                            </form>
+                        ';
+                    }
+
+                    $actions .= '</div>';
+                    return $actions;
                 })
                 ->rawColumns(['actions'])
                 ->editColumn('created_at', function ($user) {
@@ -39,13 +62,13 @@ class UserController extends Controller
                 })
                 ->make(true);
         }
-    return view('system.users.index');
+        return view('system.users.index');
     }
 
     public function create(): View
     {
         $roles = Role::orderBy('name')->get();
-    return view('system.users.create', compact('roles'));
+        return view('system.users.create', compact('roles'));
     }
 
     public function store(UserRequest $request): RedirectResponse
@@ -68,14 +91,14 @@ class UserController extends Controller
     public function show(User $user): View
     {
         $user->load('roles');
-    return view('system.users.show', compact('user'));
+        return view('system.users.show', compact('user'));
     }
 
     public function edit(User $user): View
     {
         $roles = Role::orderBy('name')->get();
         $user->load('roles');
-    return view('system.users.edit', compact('user', 'roles'));
+        return view('system.users.edit', compact('user', 'roles'));
     }
 
     public function update(UserRequest $request, User $user): RedirectResponse
