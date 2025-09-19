@@ -91,6 +91,91 @@
         }
     </style>
 
+    <!-- Dark mode minimal overrides -->
+    <style>
+        /* Toggle class: body.dark-mode */
+        body.dark-mode {
+            background-color: #0f1115;
+            color: #e5e7eb;
+        }
+
+        body.dark-mode a {
+            color: #93c5fd;
+        }
+
+        body.dark-mode .site-navbar,
+        body.dark-mode .site-menubar,
+        body.dark-mode .site-footer {
+            background-color: #111827;
+            color: #e5e7eb;
+        }
+
+        body.dark-mode .page-header {
+            background: transparent;
+        }
+
+        body.dark-mode .breadcrumb {
+            background: transparent;
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .panel,
+        body.dark-mode .dropdown-menu,
+        body.dark-mode .list-group-item,
+        body.dark-mode .table,
+        body.dark-mode .modal-content {
+            background-color: #111827;
+            color: #e5e7eb;
+            border-color: #1f2937;
+        }
+
+        body.dark-mode .form-control,
+        body.dark-mode .input-group-text,
+        body.dark-mode .custom-select {
+            background-color: #0b0f14;
+            color: #e5e7eb;
+            border-color: #384152;
+        }
+
+        body.dark-mode .btn-default,
+        body.dark-mode .btn-secondary {
+            color: #e5e7eb;
+            border-color: #384152;
+        }
+
+        body.dark-mode .site-menu .site-menu-item.active>a {
+            color: #93c5fd;
+        }
+
+        body.dark-mode .site-menu .site-menu-item>a {
+            color: #d1d5db;
+        }
+
+        body.dark-mode .site-menu .site-menu-icon {
+            color: inherit;
+        }
+
+        body.dark-mode .site-menubar {
+            border-right-color: #1f2937;
+        }
+
+        body.dark-mode .site-footer a {
+            color: #93c5fd;
+        }
+    </style>
+
+    <!-- Initialize theme early to reduce flicker -->
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark-mode-init');
+                }
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
+
     <!-- Scripts -->
     <!-- @vite(['resources/css/app.css', 'resources/js/app.js']) -->
 </head>
@@ -110,7 +195,10 @@
                 <li class="breadcrumb-item"><a href="{{ url('/dashboard') }}">Home</a></li>
                 @stack('breadcrumb')
             </ol>
-            <h1 class="page-title">@stack('page-title', 'Dashboard')</h1>
+            <h1 class="page-title">
+                <?php $__pageTitle = trim($__env->yieldPushContent('page-title'));
+echo $__pageTitle !== '' ? $__pageTitle : 'Dashboard'; ?>
+            </h1>
             <div class="page-header-actions d-flex align-items-center">
                 <button type="button" class="btn btn-sm btn-icon btn-primary btn-round waves-effect waves-classic ml-2"
                     data-toggle="tooltip" data-original-title="Back" onclick="window.history.back();">
@@ -119,6 +207,7 @@
                 @stack('page-actions')
             </div>
         </div>
+        @include('layouts.partials.alerts')
         @yield('content', "No Content Provided")
     </main>
     <!-- Footer -->
@@ -183,7 +272,6 @@
         }
     </script>
 
-    // panel JS;
     <!-- pages js -->
     <script src="{{ asset('global/js/Plugin/panel.js') }}"></script>
     <script src="{{ asset('assets/examples/js/uikit/panel-actions.js') }}"></script>
@@ -209,6 +297,16 @@
         if (typeof Site !== 'undefined') {
             Site.run();
         }
+
+        // Apply persisted theme preference
+        try {
+            var theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+            // Remove potential html-level init marker if present
+            document.documentElement.classList.remove('dark-mode-init');
+        } catch (e) { }
     });
 </script>
 

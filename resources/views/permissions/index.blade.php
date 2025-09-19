@@ -83,14 +83,17 @@
 
                     <div class="panel-body col-12">
                         <div class="table-responsive">
-                            <table id="permissions-table" class="table table-striped table-hover" style="width:100%">
+                            <table id="permissions-table" class="table table-border table-striped table-hover" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th style="width: 5%">ID</th>
-                                        <th style="width: 30%">Name</th>
-                                        <th style="width: 20%">Guard Name</th>
-                                        <th style="width: 25%">Created At</th>
-                                        <th style="width: 20%">Actions</th>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Display Name</th>
+                                        <th>Guard Name</th>
+                                        <th>category</th>
+                                        <th>role count</th>
+                                        <th>Created At</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -119,14 +122,18 @@
                 scrollX: true,
                 ajax: '{{ route('permissions.index') }}',
                 columns: [
-                    { data: 'id', name: 'id', width: '5%' },
-                    { data: 'name', name: 'name', width: '30%' },
-                    { data: 'guard_name', name: 'guard_name', width: '20%' },
-                    { data: 'created_at', name: 'created_at', width: '25%' },
-                    { data: 'actions', name: 'actions', orderable: false, searchable: false, width: '20%' },
+                    { data: 'id', name: 'id' },
+                    { data: 'name', name: 'name' },
+                    { data: 'display_name', name: 'display name' },
+                    { data: 'guard_name', name: 'guard_name' },
+                    { data: 'category', name: 'category', orderable: false, searchable: false },
+                    { data: 'roles_count', name: 'role count', orderable: false, searchable: false },
+                    { data: 'created_at', name: 'created_at' },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false },
                 ],
                 order: [[1, 'asc']],
-                drawCallback: function() {
+                dom: 'Bfrtip',
+                drawCallback: function () {
                     $('[data-toggle="tooltip"]').tooltip();
                 }
             });

@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Redirect;
 
 class PermissionController extends Controller
 {
-    
+
     // Middleware setup in the couse.
-    
+
     public function __construct()
     {
         $this->middleware('permission:permission_view')->only(['index', 'show']);
@@ -31,10 +31,30 @@ class PermissionController extends Controller
         if ($request->ajax()) {
             $query = Permission::select(['id', 'name', 'guard_name', 'created_at']);
             return DataTables::of($query)
+                ->addColumn('category', function ($permission) {
+                    if (str_starts_with($permission->name, 'user_')) {
+                        return '<span class="badge badge-primary">User Management</span>';
+                    } elseif (str_starts_with($permission->name, 'role_')) {
+                        return '<span class="badge badge-info">Role Management</span>';
+                    } elseif (str_starts_with($permission->name, 'permission_')) {
+                        return '<span class="badge badge-warning">Permission Management</span>';
+                    } elseif (str_starts_with($permission->name, 'activity_')) {
+                        return '<span class="badge badge-success">Activity Management</span>';
+                    } else {
+                        return '<span class="badge badge-secondary">Other</span>';
+                    }
+                })
+                ->addColumn('display_name', function ($permission) {
+                    return str_replace('_', ' ', ucfirst($permission->name));
+                })
                 ->addColumn('actions', function ($permission) {
                     return view('permissions.partials.actions', compact('permission'))->render();
                 })
-                ->rawColumns(['actions'])
+                ->editColumn('roles_count', function ($permission) {
+                    return '<span class="badge badge-success">' . (($permission->roles_count ?? 0)) . '</span>';
+                })
+                // Render HTML for badges and action buttons
+                ->rawColumns(['actions', 'category', 'roles_count'])
                 ->editColumn('created_at', function ($permission) {
                     return optional($permission->created_at)->format('M d, Y');
                 })
@@ -128,7 +148,7 @@ class PermissionController extends Controller
                 'attributes' => $permission->toArray(),
             ])
             ->log('Permission deleted');
-            
+
         $permission->delete();
 
         return Redirect::route('permissions.index')
