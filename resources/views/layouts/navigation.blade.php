@@ -474,6 +474,7 @@
         <div>
             <div>
                 <ul class="site-menu" data-plugin="menu">
+
                     <li class="site-menu-category">General</li>
                     <li class="site-menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         <a class="animsition-link" href="{{ route('dashboard') }}">
@@ -487,8 +488,11 @@
                             <span class="site-menu-title">Layouts</span>
                         </a>
                     </li>
+
+                    @hasanyrole('Admin|Manager|User')
                     <li class="site-menu-category">Admin</li>
-                    <li class="site-menu-item has-sub {{ request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('permissions.*') || request()->routeIs('activity.*') ? 'open' : '' }}">
+                    <li
+                        class="site-menu-item has-sub {{ request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('permissions.*') || request()->routeIs('activity.*') ? 'open' : '' }}">
                         <a href="javascript:void(0)">
                             <i class="site-menu-icon md-palette" aria-hidden="true"></i>
                             <span class="site-menu-title">System Adminstration</span>
@@ -518,32 +522,41 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="site-menu-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
-                                <a class="animsition-link" href="{{ route('users.index') }}">
-                                    <i class="site-menu-icon md-account" aria-hidden="true"></i>
-                                    <span class="site-menu-title">Users</span>
-                                </a>
-                            </li>
-                            <li class="site-menu-item {{ request()->routeIs('permissions.*') ? 'active' : '' }}">
-                                <a class="animsition-link" href="{{ route('permissions.index') }}">
-                                    <i class="site-menu-icon md-lock" aria-hidden="true"></i>
-                                    <span class="site-menu-title">Permissions</span>
-                                </a>
-                            </li>
-                            <li class="site-menu-item {{ request()->routeIs('roles.*') ? 'active' : '' }}">
-                                <a class="animsition-link" href="{{ route('roles.index') }}">
-                                    <i class="site-menu-icon md-assignment-account" aria-hidden="true"></i>
-                                    <span class="site-menu-title">Roles</span>
-                                </a>
-                            </li>
-                            <li class="site-menu-item {{ request()->routeIs('activity.*') ? 'active' : '' }}">
-                                <a class="animsition-link" href="{{ route('activity.index') }}">
-                                    <i class="site-menu-icon md-book" aria-hidden="true"></i>
-                                    <span class="site-menu-title">Activity Log</span>
-                                </a>
-                            </li>
+                            @can('user_view')
+                                <li class="site-menu-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                                    <a class="animsition-link" href="{{ route('users.index') }}">
+                                        <i class="site-menu-icon md-account" aria-hidden="true"></i>
+                                        <span class="site-menu-title">Users</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('permission_view')
+                                <li class="site-menu-item {{ request()->routeIs('permissions.*') ? 'active' : '' }}">
+                                    <a class="animsition-link" href="{{ route('permissions.index') }}">
+                                        <i class="site-menu-icon md-lock" aria-hidden="true"></i>
+                                        <span class="site-menu-title">Permissions</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('role_view')
+                                <li class="site-menu-item {{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                                    <a class="animsition-link" href="{{ route('roles.index') }}">
+                                        <i class="site-menu-icon md-assignment-account" aria-hidden="true"></i>
+                                        <span class="site-menu-title">Roles</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('activity_view')
+                                <li class="site-menu-item {{ request()->routeIs('activity.*') ? 'active' : '' }}">
+                                    <a class="animsition-link" href="{{ route('activity.index') }}">
+                                        <i class="site-menu-icon md-book" aria-hidden="true"></i>
+                                        <span class="site-menu-title">Activity Log</span>
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </li>
+                    @endhasanyrole
 
                     <li class="site-menu-category">Apps</li>
                     <li class="site-menu-item has-sub">
@@ -655,26 +668,26 @@
                         <div class="progress-bar progress-bar-warning" style="width: 60%;" role="progressbar"></div>
                     </div>
                 </div>
-            </div>  
+            </div>
 
-                    <script>
-                        // Theme toggle handler
-                        document.addEventListener('DOMContentLoaded', function() {
-                            var btn = document.getElementById('themeToggle');
-                            if (!btn) return;
-                            btn.addEventListener('click', function(e) {
-                                e.preventDefault();
-                                var isDark = document.body.classList.toggle('dark-mode');
-                                try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
-                            });
-                        });
-                        // If early init flag was set on html element, ensure body picks it up ASAP to avoid FOUC
-                        (function(){
-                            if (document.documentElement.classList.contains('dark-mode-init')) {
-                                document.body.classList.add('dark-mode');
-                            }
-                        })();
-                    </script>
+            <script>
+                // Theme toggle handler
+                document.addEventListener('DOMContentLoaded', function () {
+                    var btn = document.getElementById('themeToggle');
+                    if (!btn) return;
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        var isDark = document.body.classList.toggle('dark-mode');
+                        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) { }
+                    });
+                });
+                // If early init flag was set on html element, ensure body picks it up ASAP to avoid FOUC
+                (function () {
+                    if (document.documentElement.classList.contains('dark-mode-init')) {
+                        document.body.classList.add('dark-mode');
+                    }
+                })();
+            </script>
         </div>
     </div>
 

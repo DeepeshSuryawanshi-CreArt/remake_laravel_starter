@@ -45,14 +45,6 @@
                             <a class="panel-action icon md-fullscreen" data-toggle="panel-fullscreen" aria-hidden="true"></a>
                         </div>
                     </div>
-                    @if (session('status'))
-                        <div class="alert alert-success alert-dismissible" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            {{ session('status') }}
-                        </div>
-                    @endif
                     <div class="panel-body col-12">
                         <div class="table-responsive">
                             <table id="users-table" class="table table-striped table-hover" style="width:100%">
