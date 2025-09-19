@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-    // Activity log
-    Route::get('activity', [ActivityController::class, 'index'])->name('activity.index');
 });
 
 // Route for test page
@@ -42,6 +40,7 @@ Route::middleware('auth')->group(function () {
 
     // Activity log
     Route::get('activity', [ActivityController::class, 'index'])->name('activity.index');
+    Route::get('activity/{activity}', [ActivityController::class, 'show'])->name('activity.show');
 });
 
 require __DIR__ . '/auth.php';
