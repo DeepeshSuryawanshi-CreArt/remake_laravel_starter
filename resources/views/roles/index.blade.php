@@ -87,8 +87,9 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>Guard Name</th>
                                         <th>Permissions</th>
+                                        <th>User count</th>
+                                        <th>Guard Name</th>
                                         <th>Created At</th>
                                         <th>Actions</th>
                                     </tr>
@@ -119,8 +120,9 @@
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
+                    { data: 'permissions', name: 'permissions' },
+                    { data: 'user_count', name: 'user count',searchable:false },
                     { data: 'guard_name', name: 'guard_name' },
-                    { data: 'permissions_count', name: 'permissions_count', orderable: false, searchable: false },
                     { data: 'created_at', name: 'created_at' },
                     { data: 'actions', name: 'actions', orderable: false, searchable: false },
                 ],

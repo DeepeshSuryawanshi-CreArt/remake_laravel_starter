@@ -29,13 +29,24 @@ class RoleController extends Controller
                 ->addColumn('actions', function ($role) {
                     return view('roles.partials.actions', compact('role'))->render();
                 })
-                ->editColumn('permissions_count', function ($role) {
-                    return $role->permissions_count . ' permissions';
+                ->addColumn('permissions', function ($role) {
+                    $permissions = $role->permissions->take(3)->pluck('name')->toArray();
+                    $badges = '';
+                    foreach ($permissions as $permission) {
+                        $badges .= '<span class="badge badge-info mr-1">' . $permission . '</span>';
+                    }
+                    if ($role->permissions->count() > 3) {
+                        $badges .= '<span class="badge badge-secondary">+' . ($role->permissions->count() - 3) . ' more</span>';
+                    }
+                    return $badges ?: '<span class="badge badge-secondary">No Permissions</span>';
+                })
+                ->addColumn('user_count', function ($role) {
+                    return '<span class="badge badge-success">' . (($role->users_count ?? 0)) . '</span>';
                 })
                 ->editColumn('created_at', function ($permission) {
                     return optional($permission->created_at)->format('M d, Y');
                 })
-                ->rawColumns(['actions'])
+                ->rawColumns(['actions', 'user_count', 'permissions'])
                 ->make(true);
         }
         return view('roles.index');
@@ -104,7 +115,7 @@ class RoleController extends Controller
     {
         $old = $role->getOriginal();
         $oldPermissions = $role->permissions->pluck('name')->toArray();
-        
+
         $role->update([
             'name' => $request->validated('name'),
             'guard_name' => $request->validated('guard_name', 'web'),
@@ -148,7 +159,7 @@ class RoleController extends Controller
                 'permissions' => $role->permissions->pluck('name')->toArray(),
             ])
             ->log('Role deleted');
-            
+
         $role->delete();
 
         return Redirect::route('roles.index')
